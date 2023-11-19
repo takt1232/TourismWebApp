@@ -6,6 +6,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material";
 import { themeSettings } from "theme";
 import HomePage from "scenes/homePage";
+import UploadSpotPage from "scenes/uploadSpot/index";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -23,6 +24,10 @@ function App() {
             <Route
               path="/home"
               element={isAuth ? <HomePage /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/upload/post"
+              element={isAuth ? <UploadSpotPage /> : <Navigate to="/login" />}
             />
           </Routes>
         </ThemeProvider>

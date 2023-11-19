@@ -1,12 +1,15 @@
-import { Box, useMediaQuery } from "@mui/material";
+import { Box, Button, useMediaQuery } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import Sidebar from "scenes/sideBar";
 import TopBar from "scenes/topBar";
+import { useNavigate } from "react-router-dom";
+import SpotsWidget from "scenes/widgets/SpotsWidget";
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px");
   const { _id, picturePath } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const token = useSelector((state) => state.token);
   const userId = _id;
 
@@ -14,7 +17,7 @@ const HomePage = () => {
 
   const [user, setUser] = useState(null);
   const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
+    const response = await fetch(`http://localhost:3001/tourists/${userId}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -44,9 +47,22 @@ const HomePage = () => {
 
   return (
     <>
-      <Box>
-        <TopBar />
+      <Box display="flex" flexDirection="row">
         <Sidebar />
+        <Box width="100%" marginLeft="250px">
+          <TopBar />
+          <Box display="Flex" flexDirection="column" justifyContent="center">
+            <Button
+              variant="contained"
+              onClick={() => {
+                navigate("/upload/post");
+              }}
+            >
+              Upload Spot
+            </Button>
+            <SpotsWidget userId={_id} />
+          </Box>
+        </Box>
       </Box>
     </>
   );

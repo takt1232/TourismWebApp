@@ -10,6 +10,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import touristRoutes from "./routes/tourist.js";
+import spotRoutes from "./routes/spot.js";
+import { uploadSpot } from "./controllers/spot.js";
 import { registerTourist } from "./controllers/auth.js";
 
 /* CONFIGURATIONS */
@@ -39,10 +41,12 @@ const upload = multer({ storage });
 
 /* ROUTES WITH FILES */
 app.post("/auth/register", upload.single("picture"), registerTourist);
+app.post("/upload/spot", upload.single("picture"), uploadSpot);
 
 /* ROUTES */
 app.use("/auth", authRoutes);
-app.use("/users", touristRoutes);
+app.use("/tourists", touristRoutes);
+app.use("/spots", spotRoutes);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;

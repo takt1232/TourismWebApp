@@ -3,22 +3,18 @@ import {
   Box,
   IconButton,
   InputBase,
-  Typography,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
 import { Search, DarkMode, LightMode, Menu, Close } from "@mui/icons-material";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setMode, setLogout } from "state";
-import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 
 const TopBar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
   const theme = useTheme();
@@ -26,8 +22,6 @@ const TopBar = () => {
   const dark = theme.palette.neutral.dark;
   const background = theme.palette.background.default;
   const alt = theme.palette.background.alt;
-
-  const fullName = `${user.firstName} ${user.lastName}`;
 
   return (
     <>
