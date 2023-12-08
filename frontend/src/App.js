@@ -11,6 +11,7 @@ import AdminLoginPage from "scenes/adminLoginPage";
 import ProtectedRoute from "ProtectedRoutes";
 import BookingPage from "scenes/bookingPage.jsx";
 import CartPage from "scenes/cartPage";
+import AdminViewServicePage from "scenes/adminViewServicePage";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -32,6 +33,10 @@ function App() {
             <Route path="/shopping/cart" element={<CartPage />} />
             <Route element={<ProtectedRoute role={role} isAuth={isAuth} />}>
               <Route path="/dashboard" element={<AdminPage />} />
+              <Route
+                path="/admin/booking/:serviceId"
+                element={<AdminViewServicePage />}
+              />
             </Route>
           </Routes>
         </ThemeProvider>

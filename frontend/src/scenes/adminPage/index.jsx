@@ -6,20 +6,23 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   IconButton,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import TopBar from "scenes/widgets/TopBar";
-import AddBoxIcon from "@mui/icons-material/AddBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Form from "./Form";
 import { useDispatch } from "react-redux";
-import { setLogout } from "state";
 import { useNavigate } from "react-router-dom";
 
 const AdminPage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px");
+
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,42 +33,166 @@ const AdminPage = () => {
     setOpenAddModal(false);
   };
 
+  const getCategories = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3001/services/categories",
+        {
+          method: "GET",
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setCategories(data.categories || []);
+      } else {
+        console.error("Failed to fetch categories:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getServices = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/services", {
+        method: "GET",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setServices(data || []);
+      } else {
+        console.error("Failed to fetch services:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+    getServices();
+  }, []);
+
   return (
     <>
       <TopBar />
-      <Box
-        padding={"2rem"}
-        display={"flex"}
-        flexDirection={"row"}
-        alignItems={"center"}
-      >
-        <IconButton
-          onClick={() => {
-            setOpenAddModal(true);
-          }}
+      <Box padding={"2rem"}>
+        <Typography variant="h3" mb={"2rem"}>
+          Admin Page
+        </Typography>
+        <Box
+          boxShadow={"0px 0px 4px 2px rgba(0, 0, 0, 0.1)"}
+          borderRadius={"5px"}
         >
-          <AddBoxIcon />
-        </IconButton>
-        <Typography>Add Service</Typography>
-      </Box>
-      <Box
-        padding={"2rem"}
-        display={"flex"}
-        flexDirection={"row"}
-        alignItems={"center"}
-      >
-        <IconButton
-          onClick={() => {
-            dispatch(setLogout());
-            navigate("/");
-          }}
-        >
-          <AddBoxIcon />
-        </IconButton>
-        <Typography>Logout</Typography>
+          <Box padding={"1rem"}>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              mb={"1rem"}
+            >
+              <Typography variant="h3">Services</Typography>
+              <Button
+                onClick={() => {
+                  setOpenAddModal(true);
+                }}
+                sx={{
+                  backgroundColor: "#489BAF",
+                  color: "#ffffff",
+                  padding: "0.5rem",
+                  "&:hover": {
+                    backgroundColor: "#489BAF",
+                  },
+                }}
+              >
+                ADD SERVICE
+              </Button>
+            </Box>
+            <Divider sx={{ mb: "1rem" }} />
+            <Box display={"flex"} flexDirection={"column"} gap={"2rem"}>
+              {loading ? (
+                <Typography variant="h3">Loading...</Typography>
+              ) : (
+                categories.map((category, categoryIndex) => (
+                  <>
+                    <Box key={categoryIndex}>
+                      <Box>
+                        <Typography variant="h4">
+                          {category.toUpperCase()}
+                        </Typography>
+                      </Box>
+                      <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        flexWrap={"wrap"}
+                        gap={"1rem"}
+                      >
+                        {services
+                          .filter(
+                            (service) => service.service_category === category
+                          )
+                          .map((service, serviceIndex) => (
+                            <Box
+                              display={"flex"}
+                              flexDirection={"column"}
+                              minWidth={"300px"}
+                              maxWidth={"300px"}
+                              minHeight={"300px"}
+                              maxHeight={"300px"}
+                              gap={"0.5rem"}
+                              key={serviceIndex}
+                            >
+                              <Box width={"100%"} height={"200px"}>
+                                <img
+                                  src={`http://localhost:3001/assets/${service.image}`}
+                                  alt="service-img"
+                                  style={{
+                                    width: "300px",
+                                    height: "200px",
+                                    objectFit: "cover",
+                                  }}
+                                />
+                              </Box>
+                              <Typography variant="h4">
+                                {service.title.toUpperCase()}
+                              </Typography>
+                              <Typography variant="h5">
+                                PHP ₱{service.price}
+                              </Typography>
+                              <Button
+                                onClick={() => {
+                                  navigate(`/admin/booking/${service._id}`);
+                                }}
+                                sx={{
+                                  backgroundColor: "#489BAF",
+                                  color: "#ffffff",
+                                  padding: "0.5rem",
+                                  "&:hover": {
+                                    backgroundColor: "#489BAF",
+                                  },
+                                }}
+                              >
+                                VIEW MORE
+                              </Button>
+                            </Box>
+                          ))}
+                      </Box>
+                    </Box>
+                    <Divider />
+                  </>
+                ))
+              )}
+            </Box>
+          </Box>
+        </Box>
       </Box>
       <Dialog open={OpenAddModal} onClose={handleClose}>
-        <DialogTitle>Add Service</DialogTitle>
+        <DialogTitle>ADD SERVICE</DialogTitle>
         <DialogContent>
           <Form />
         </DialogContent>

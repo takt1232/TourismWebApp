@@ -8,7 +8,6 @@ export const addBook = async (req, res) => {
       id_services,
       id_account,
       count,
-      amount,
       reservation,
       reservationcompletion,
     } = req.body;
@@ -25,18 +24,34 @@ export const addBook = async (req, res) => {
       return res.status(404).json({ message: "Account not found" });
     }
 
-    // Create a new BookingCart instance if both service and account exist
-    const newBook = new BookingCart({
+    // Check if a booking with the same id_services and id_account already exists in BookingCart
+    let existingBooking = await BookingCart.findOne({
       id_services,
       id_account,
-      count,
-      amount,
-      reservation,
-      reservationcompletion,
     });
 
-    const saveBook = await newBook.save();
-    res.status(201).json(saveBook);
+    if (existingBooking) {
+      // If booking exists, increment the count and update the reservation details
+      existingBooking.count += count;
+      existingBooking.reservation = reservation;
+      existingBooking.reservationcompletion = reservationcompletion;
+
+      const updatedBooking = await existingBooking.save();
+      res.status(200).json(updatedBooking);
+    } else {
+      // If booking does not exist, create a new BookingCart instance
+      const newBook = new BookingCart({
+        id_services,
+        id_account,
+        count: 1,
+        amount,
+        reservation,
+        reservationcompletion,
+      });
+
+      const saveBook = await newBook.save();
+      res.status(201).json(saveBook);
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -1,17 +1,6 @@
 /* eslint-disable no-unused-vars */
-import {
-  Box,
-  Divider,
-  IconButton,
-  TextField,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import FlexBetween from "components/FlexBetween";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import { Box, Divider, Typography, useMediaQuery } from "@mui/material";
 import TopBar from "scenes/widgets/TopBar";
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -165,7 +154,7 @@ const ServicesPage = () => {
                                 />
                               </Box>
                               <Typography sx={{ fontSize: "20px", mt: "1rem" }}>
-                                {service.title} {/* Display service details */}
+                                {service.title.toUpperCase()}
                               </Typography>
                               <Typography sx={{ fontSize: "20px", mt: "2rem" }}>
                                 PHP ₱ {service.price}{" "}

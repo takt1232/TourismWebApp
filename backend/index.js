@@ -12,7 +12,7 @@ import authRoutes from "./routes/auth.js";
 import accountRoutes from "./routes/account.js";
 import servicesRoutes from "./routes/service.js";
 import bookRoutes from "./routes/booking.js";
-import { editService, uploadService } from "./controllers/service.js";
+import { updateService, uploadService } from "./controllers/service.js";
 import { registerAccount } from "./controllers/auth.js";
 import { uploadImage } from "./controllers/image.js";
 
@@ -44,7 +44,7 @@ const upload = multer({ storage });
 /* ROUTES WITH FILES */
 app.post("/auth/register", upload.single("picture"), registerAccount);
 app.post("/upload/service", upload.single("picture"), uploadService);
-app.patch("/edit/spot/:id", upload.single("picture"), editService);
+app.patch("/update/service/:id", upload.single("picture"), updateService);
 app.post("/upload/image", upload.single("picture"), uploadImage);
 
 /* ROUTES */

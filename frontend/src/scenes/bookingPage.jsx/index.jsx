@@ -58,6 +58,10 @@ const BookingPage = () => {
     setBookDone(false);
   };
 
+  const handleCancelBook = () => {
+    setIsBook(false);
+  };
+
   const [state, setState] = useState([
     {
       startDate: new Date(),
@@ -89,6 +93,7 @@ const BookingPage = () => {
       id_account: user._id,
       name: `${user.firstName} ${user.lastName}`,
       email: user.email,
+      count: service.count,
       amount: service.price,
       reservation: state[0].startDate, // Assuming the start date is in the first object of state array
       reservationcompletion: state[0].endDate, // Assuming the end date is in the first object of state array
@@ -122,8 +127,8 @@ const BookingPage = () => {
         display={"flex"}
         flexDirection={"row"}
         width={"100%"}
-        height={"100px"}
-        padding={"2rem"}
+        height={"100%"}
+        padding={"2rem 0rem 1rem 2rem"}
       >
         <Typography
           onClick={() => {
@@ -162,63 +167,100 @@ const BookingPage = () => {
             mr: "0.25rem",
           }}
         >
-          / {serviceId}
+          / {service?.title}
         </Typography>
       </Box>
+      <Divider />
       {loading ? (
         <Typography variant="h3">Loading...</Typography>
       ) : isBook && isAuth && user ? (
-        <Box
-          display="flex"
-          flexDirection="row"
-          alignItems="flex-start"
-          justifyContent={"center"}
-          padding={"0rem 4rem 4rem 4rem"}
-          gap={"2rem"}
-        >
-          {/* Date pickers for reservation dates */}
-          <DateRangePicker
-            onChange={(item) => setState([item.selection])}
-            showSelectionPreview={true}
-            moveRangeOnFirstSelection={false}
-            months={1}
-            ranges={state}
-            minDate={addDays(new Date(), -30)}
-            maxDate={addDays(new Date(), 90)}
-            direction="vertical"
-            scroll={{ enabled: true }}
-          />
-          {/* Input fields for booking information */}
-          <Box display={"flex"} flexDirection={"column"} gap={"2rem"}>
-            <TextField
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={`${user.firstName} ${user.lastName}`}
-            />
-            <TextField
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={user.email}
-            />
-
-            <Button
-              onClick={addBook}
-              sx={{
-                backgroundColor: "#489BAF",
-                color: "#ffffff",
-                padding: "1rem",
-                "&:hover": {
-                  backgroundColor: "#489BAF",
-                },
-              }}
-            >
-              CONFIRM BOOKING
-            </Button>
+        <>
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            padding={"1rem 0rem 2rem 2rem"}
+          >
+            <Typography variant="h4">Reservation Date Selection</Typography>
           </Box>
-          {/* Add more input fields for booking information as needed */}
-        </Box>
+          <Box
+            display="flex"
+            flexDirection="row"
+            alignItems="flex-start"
+            justifyContent={"center"}
+            padding={"0rem 4rem 4rem 4rem"}
+            gap={"5rem"}
+          >
+            {/* Date pickers for reservation dates */}
+            <DateRangePicker
+              onChange={(item) => setState([item.selection])}
+              showSelectionPreview={true}
+              moveRangeOnFirstSelection={false}
+              months={1}
+              ranges={state}
+              minDate={addDays(new Date(), -30)}
+              maxDate={addDays(new Date(), 90)}
+              direction="vertical"
+              scroll={{ enabled: true }}
+            />
+            {/* Input fields for booking information */}
+            <Box
+              boxShadow={"0px 0px 4px 2px rgba(0, 0, 0, 0.1)"}
+              borderRadius={"5px"}
+              sx={{ backgroundColor: "#EDEDED" }}
+            >
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                gap={"2rem"}
+                padding={"1rem"}
+              >
+                <Typography variant="h4">Personal Details:</Typography>
+                <Typography>Name</Typography>
+                <TextField
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  value={`${user.firstName} ${user.lastName}`}
+                />
+                <Typography>Email</Typography>
+                <TextField
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={user.email}
+                />
+                <Box display={"flex"} flexDirection={"row"} gap={"1rem"}>
+                  <Button
+                    onClick={handleCancelBook}
+                    sx={{
+                      backgroundColor: "#B63332",
+                      color: "#ffffff",
+                      padding: "1rem",
+                      "&:hover": {
+                        backgroundColor: "#B63332",
+                      },
+                    }}
+                  >
+                    CANCEL BOOKING
+                  </Button>
+                  <Button
+                    onClick={addBook}
+                    sx={{
+                      backgroundColor: "#489BAF",
+                      color: "#ffffff",
+                      padding: "1rem",
+                      "&:hover": {
+                        backgroundColor: "#489BAF",
+                      },
+                    }}
+                  >
+                    CONFIRM BOOKING
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </>
       ) : isBook ? (
         <Box display={"flex"} justifyContent={"center"} padding={"4rem"}>
           <BookLoginForm />
@@ -227,11 +269,18 @@ const BookingPage = () => {
         <>
           <Box
             display={"flex"}
+            justifyContent={"center"}
+            padding={"1rem 0rem 0rem 2rem"}
+          >
+            <Typography variant="h4">Book Service</Typography>
+          </Box>
+          <Box
+            display={"flex"}
             flexDirection={"row"}
             padding={"2rem 4rem"}
             gap={"2rem"}
           >
-            <Box width={"700px"} height={"700px"}>
+            <Box width={"650px"} height={"650px"}>
               <img
                 src={`http://localhost:3001/assets/${service.image}`}
                 alt="service-img"
@@ -249,7 +298,7 @@ const BookingPage = () => {
               width={"50%"}
             >
               <Typography variant="h1" sx={{ fontSize: "24px" }}>
-                {service.title}
+                {service.title.toUpperCase()}
               </Typography>
               <Typography variant="h1" sx={{ fontSize: "24px" }}>
                 PHP ₱ {service.price}

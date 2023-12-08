@@ -40,7 +40,7 @@ export const getService = async (req, res) => {
   }
 };
 
-export const editService = async (req, res) => {
+export const updateService = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedFields = req.body;
