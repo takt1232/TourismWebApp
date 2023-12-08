@@ -4,6 +4,7 @@ const initialState = {
   mode: "light",
   user: null,
   token: null,
+  role: null,
   posts: [],
 };
 
@@ -17,6 +18,9 @@ export const authSlice = createSlice({
     setLogin: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
+    },
+    setRole: (state, action) => {
+      state.user = action.payload.role;
     },
     setLogout: (state) => {
       state.user = null;
@@ -35,6 +39,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setMode, setLogin, setLogout, setPosts, setPost } =
+export const { setMode, setLogin, setLogout, setPosts, setPost, setRole } =
   authSlice.actions;
 export default authSlice.reducer;

@@ -9,10 +9,12 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
-import touristRoutes from "./routes/tourist.js";
-import spotRoutes from "./routes/spot.js";
-import { uploadSpot } from "./controllers/spot.js";
-import { registerTourist } from "./controllers/auth.js";
+import accountRoutes from "./routes/account.js";
+import servicesRoutes from "./routes/service.js";
+import bookRoutes from "./routes/booking.js";
+import { editService, uploadService } from "./controllers/service.js";
+import { registerAccount } from "./controllers/auth.js";
+import { uploadImage } from "./controllers/image.js";
 
 /* CONFIGURATIONS */
 const __filename = fileURLToPath(import.meta.url);
@@ -40,13 +42,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /* ROUTES WITH FILES */
-app.post("/auth/register", upload.single("picture"), registerTourist);
-app.post("/upload/spot", upload.single("picture"), uploadSpot);
+app.post("/auth/register", upload.single("picture"), registerAccount);
+app.post("/upload/service", upload.single("picture"), uploadService);
+app.patch("/edit/spot/:id", upload.single("picture"), editService);
+app.post("/upload/image", upload.single("picture"), uploadImage);
 
 /* ROUTES */
 app.use("/auth", authRoutes);
-app.use("/tourists", touristRoutes);
-app.use("/spots", spotRoutes);
+app.use("/tourists", accountRoutes);
+app.use("/services", servicesRoutes);
+app.use("/book", bookRoutes);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;
