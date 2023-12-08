@@ -1,7 +1,6 @@
 {
-  "dependencies": {
-    "date-fns": "^2.30.0",
-    "react": "^18.2.0",
-    "react-date-range": "^1.4.0"
+  "scripts": {
+    "frontend": "cd frontend && npm start",
+    "backend": "cd backend && nodemon index.js"
   }
 }

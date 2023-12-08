@@ -4,14 +4,18 @@ import SearchIcon from "@mui/icons-material/Search";
 import FlexBetween from "components/FlexBetween";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setLogout } from "state";
 
 const TopBar = () => {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px");
 
   const navigate = useNavigate();
   const role = useSelector((state) => state.user?.role);
+
+  const dispatch = useDispatch();
 
   return (
     <Box height={"100%"}>
@@ -70,6 +74,17 @@ const TopBar = () => {
             <ShoppingBagIcon
               onClick={() => {
                 navigate("/shopping/cart");
+              }}
+              sx={{
+                fontSize: "1.75rem",
+                "&:hover": {
+                  cursor: "pointer",
+                },
+              }}
+            />
+            <PowerSettingsNewIcon
+              onClick={() => {
+                dispatch(setLogout());
               }}
               sx={{
                 fontSize: "1.75rem",
