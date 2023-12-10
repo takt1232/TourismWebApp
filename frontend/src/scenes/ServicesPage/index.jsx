@@ -61,12 +61,7 @@ const ServicesPage = () => {
     <>
       <TopBar />
       <Box padding={"2rem"}>
-        <Box
-          display={"flex"}
-          flexDirection={"row"}
-          width={"100%"}
-          height={"100px"}
-        >
+        <Box display={"flex"} flexDirection={"row"} width={"100%"}>
           <Typography
             onClick={() => {
               navigate("/");
@@ -86,14 +81,19 @@ const ServicesPage = () => {
             / Services
           </Typography>
         </Box>
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
+          padding={"1rem 0rem 0rem 2rem"}
+        >
+          <Typography
+            variant="h4"
+            sx={{ color: "#7D7D7D", fontWeight: "bold" }}
+          >
+            SERVICES
+          </Typography>
+        </Box>
         <Box display={"flex"} flexDirection={"row"}>
-          <Box width={"280px"}>
-            <Typography
-              sx={{ color: "#7D7D7D", fontSize: "1.5rem", fontWeight: "bold" }}
-            >
-              RESULT
-            </Typography>
-          </Box>
           <Box
             display={"flex"}
             flexDirection={"column"}
@@ -112,60 +112,60 @@ const ServicesPage = () => {
                 <Typography variant="h3">Loading...</Typography>
               ) : (
                 categories.map((category, index) => (
-                  <>
-                    <Box key={index}>
-                      <Typography
-                        variant="h3"
-                        sx={{ fontWeight: "bold", marginBottom: "1rem" }}
-                      >
-                        {category}
-                      </Typography>
-                      <Box display={"flex"} flexDirection={"row"} gap={"1rem"}>
-                        {services
-                          .filter(
-                            (service) => service.service_category === category
-                          )
-                          .map((service, serviceIndex) => (
-                            <Box
-                              key={serviceIndex}
-                              display={"flex"}
-                              flexDirection={"column"}
-                              justifyContent={"flex-start"}
-                              width={"300px"}
-                              height={"562px"}
-                              onClick={() =>
-                                navigate(`/booking/${service._id}`)
-                              }
-                              sx={{
-                                "&:hover": {
-                                  cursor: "pointer",
-                                },
-                              }}
-                            >
-                              <Box width={"300px"} height={"300px"}>
-                                <img
-                                  src={`http://localhost:3001/assets/${service.image}`}
-                                  alt="Uploaded"
-                                  style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "cover",
-                                  }}
-                                />
-                              </Box>
-                              <Typography sx={{ fontSize: "20px", mt: "1rem" }}>
-                                {service.title.toUpperCase()}
-                              </Typography>
-                              <Typography sx={{ fontSize: "20px", mt: "2rem" }}>
-                                PHP ₱ {service.price}{" "}
-                                {/* Display service details */}
-                              </Typography>
+                  <Box
+                    boxShadow={"0px 0px 4px 2px rgba(0, 0, 0, 0.1)"}
+                    borderRadius={"5px"}
+                    key={index}
+                    padding={"2rem"}
+                  >
+                    <Typography variant="h3" sx={{ marginBottom: "1rem" }}>
+                      {category.toUpperCase()}
+                    </Typography>
+                    <Box display={"flex"} flexDirection={"row"} gap={"1rem"}>
+                      {services
+                        .filter(
+                          (service) => service.service_category === category
+                        )
+                        .map((service, serviceIndex) => (
+                          <Box
+                            key={serviceIndex}
+                            display={"flex"}
+                            flexDirection={"column"}
+                            justifyContent={"flex-start"}
+                            width={"300px"}
+                            height={"562px"}
+                            onClick={() => navigate(`/booking/${service?._id}`)}
+                            sx={{
+                              "&:hover": {
+                                cursor: "pointer",
+                              },
+                            }}
+                          >
+                            <Box width={"300px"} height={"300px"}>
+                              <img
+                                src={`http://localhost:3001/assets/${service?.image}`}
+                                alt="Uploaded"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                }}
+                              />
                             </Box>
-                          ))}
-                      </Box>
+                            <Typography variant="h4" sx={{ mt: "1rem" }}>
+                              {service.title.toUpperCase()}
+                            </Typography>
+                            <Typography variant="h4" sx={{ mt: "1rem" }}>
+                              PHP ₱ {service.price}{" "}
+                            </Typography>
+                            <Typography variant="h6" sx={{ mt: "1rem" }}>
+                              QUANTITY: {service.quantity}{" "}
+                            </Typography>
+                          </Box>
+                        ))}
                     </Box>
                     <Divider sx={{ margin: "1rem 0rem" }} />
-                  </>
+                  </Box>
                 ))
               )}
             </Box>

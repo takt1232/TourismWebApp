@@ -172,6 +172,7 @@ const AdminViewServicePage = () => {
               <Typography variant="h1" sx={{ fontSize: "24px" }}>
                 PHP ₱ {service.price}
               </Typography>
+              <Typography variant="h6">QUANTITY: {service.quantity}</Typography>
 
               <Box
                 display={"flex"}
@@ -273,7 +274,7 @@ const AdminViewServicePage = () => {
         </DialogActions>
       </Dialog>
       <Dialog open={editModal} onClose={handleCloseModal}>
-        <DialogTitle>ADD SERVICE</DialogTitle>
+        <DialogTitle>EDIT SERVICE</DialogTitle>
         <DialogContent>
           <EditServiceForm
             id={service?._id}
@@ -283,6 +284,7 @@ const AdminViewServicePage = () => {
             details={service?.details}
             price={service?.price}
             image={service?.image}
+            quantity={service?.quantity}
           />
         </DialogContent>
         <DialogActions>

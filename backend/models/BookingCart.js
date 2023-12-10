@@ -12,10 +12,8 @@ const BookingCartSchema = new mongoose.Schema(
       ref: "Account", // Reference to the Account model
       required: true,
     },
-    count: String,
-    amount: String,
-    reservation: Date,
-    reservationcompletion: Date,
+    count: Number,
+    amount: Number,
   },
   { timestamps: true }
 );

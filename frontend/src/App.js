@@ -12,6 +12,9 @@ import ProtectedRoute from "ProtectedRoutes";
 import BookingPage from "scenes/bookingPage.jsx";
 import CartPage from "scenes/cartPage";
 import AdminViewServicePage from "scenes/adminViewServicePage";
+import AdminManageUser from "scenes/adminManageUserPage";
+import AdminManageCheckOutPage from "scenes/adminManageCheckOutPage";
+import ViewCheckoutPage from "scenes/viewCheckout";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -31,11 +34,17 @@ function App() {
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/booking/:serviceId" element={<BookingPage />} />
             <Route path="/shopping/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<ViewCheckoutPage />} />
             <Route element={<ProtectedRoute role={role} isAuth={isAuth} />}>
-              <Route path="/dashboard" element={<AdminPage />} />
+              <Route path="/manage/services" element={<AdminPage />} />
               <Route
                 path="/admin/booking/:serviceId"
                 element={<AdminViewServicePage />}
+              />
+              <Route path="/manage/user" element={<AdminManageUser />} />
+              <Route
+                path="/manage/checkout"
+                element={<AdminManageCheckOutPage />}
               />
             </Route>
           </Routes>

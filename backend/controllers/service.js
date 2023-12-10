@@ -2,8 +2,15 @@ import Services from "../models/Services.js";
 
 export const uploadService = async (req, res) => {
   try {
-    const { title, service_category, description, details, price, image } =
-      req.body;
+    const {
+      title,
+      service_category,
+      description,
+      details,
+      price,
+      image,
+      quantity,
+    } = req.body;
 
     const newService = new Services({
       title,
@@ -12,6 +19,7 @@ export const uploadService = async (req, res) => {
       details,
       price,
       image,
+      quantity,
     });
     const saveService = await newService.save();
     res.status(201).json(saveService);

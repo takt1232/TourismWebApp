@@ -4,7 +4,6 @@ import {
   getCategories,
   getService,
   getServices,
-  updateService,
 } from "../controllers/service.js";
 
 const router = express.Router();

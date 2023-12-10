@@ -8,14 +8,40 @@ import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "state";
+import { useEffect, useState } from "react";
 
 const TopBar = () => {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px");
 
   const navigate = useNavigate();
+
   const role = useSelector((state) => state.user?.role);
+  const user = useSelector((state) => state?.user);
+  const token = useSelector((state) => state?.token);
 
   const dispatch = useDispatch();
+
+  const [cartCount, setCartCount] = useState(null);
+
+  const getCartCount = async () => {
+    if (user?._id) {
+      const response = await fetch(
+        `http://localhost:3001/book/count/${user?._id}`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const data = await response.json();
+      setCartCount(data);
+    }
+  };
+
+  useEffect(() => {
+    getCartCount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box height={"100%"}>
@@ -47,13 +73,14 @@ const TopBar = () => {
               },
             }}
           >
-            RESORT NI NEIL
+            RESORT NI NIEL
           </Typography>
         </Box>
         <Box
           display={"flex"}
           flexDirection={"column"}
           alignItems={"center"}
+          justifyContent={"center"}
           padding={"1rem"}
           gap={"0.5rem"}
         >
@@ -71,20 +98,42 @@ const TopBar = () => {
                 },
               }}
             />
-            <ShoppingBagIcon
-              onClick={() => {
-                navigate("/shopping/cart");
-              }}
-              sx={{
-                fontSize: "1.75rem",
-                "&:hover": {
-                  cursor: "pointer",
-                },
-              }}
-            />
+            <Box position={"relative"}>
+              <ShoppingBagIcon
+                onClick={() => {
+                  navigate("/shopping/cart");
+                }}
+                sx={{
+                  fontSize: "1.75rem",
+                  "&:hover": {
+                    cursor: "pointer",
+                  },
+                }}
+              />
+              {cartCount?.totalEntries > 0 && (
+                <Box
+                  position="absolute"
+                  bottom="2px"
+                  right="-5px"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  backgroundColor="#489BAF"
+                  width="18px"
+                  height="18px"
+                  borderRadius="50%"
+                  zIndex="1"
+                >
+                  <Typography sx={{ color: "#ffffff" }}>
+                    {cartCount?.totalEntries}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
             <PowerSettingsNewIcon
               onClick={() => {
                 dispatch(setLogout());
+                window.location.reload();
               }}
               sx={{
                 fontSize: "1.75rem",
@@ -94,26 +143,6 @@ const TopBar = () => {
               }}
             />
           </Box>
-          <FlexBetween>
-            <TextField
-              id="filled-basic"
-              label="Search"
-              variant="filled"
-              size="small"
-            />
-            <Box padding={"0.5rem"} sx={{ backgroundColor: "#489BAF" }}>
-              <SearchIcon
-                sx={{
-                  color: "white",
-                  fontWeight: "bold",
-                  "&:hover": {
-                    color: "#E8E8E8",
-                    cursor: "pointer",
-                  },
-                }}
-              />
-            </Box>
-          </FlexBetween>
         </Box>
       </Box>
       <Box
@@ -126,32 +155,6 @@ const TopBar = () => {
         padding={"1rem"}
       >
         <Typography
-          onClick={() => navigate("/services")}
-          sx={{
-            fontSize: "16px",
-            color: "#FFFFFF",
-            "&:hover": {
-              color: "#E8E8E8",
-              cursor: "pointer",
-            },
-          }}
-        >
-          Services
-        </Typography>
-        <Typography
-          onClick={() => navigate("/about")}
-          sx={{
-            fontSize: "16px",
-            color: "#FFFFFF",
-            "&:hover": {
-              color: "#E8E8E8",
-              cursor: "pointer",
-            },
-          }}
-        >
-          About
-        </Typography>
-        <Typography
           onClick={() => navigate("/")}
           sx={{
             fontSize: "16px",
@@ -162,22 +165,76 @@ const TopBar = () => {
             },
           }}
         >
-          Home
+          HOME
+        </Typography>
+        <Typography
+          onClick={() => navigate("/services")}
+          sx={{
+            fontSize: "16px",
+            color: "#FFFFFF",
+            "&:hover": {
+              color: "#E8E8E8",
+              cursor: "pointer",
+            },
+          }}
+        >
+          SERVICES
+        </Typography>
+        <Typography
+          onClick={() => navigate("/checkout")}
+          sx={{
+            fontSize: "16px",
+            color: "#FFFFFF",
+            "&:hover": {
+              color: "#E8E8E8",
+              cursor: "pointer",
+            },
+          }}
+        >
+          CHECKOUT
         </Typography>
         {role === "admin" && (
-          <Typography
-            onClick={() => navigate("/dashboard")}
-            sx={{
-              fontSize: "16px",
-              color: "#FFFFFF",
-              "&:hover": {
-                color: "#E8E8E8",
-                cursor: "pointer",
-              },
-            }}
-          >
-            Admin
-          </Typography>
+          <>
+            <Typography
+              onClick={() => navigate("/manage/services")}
+              sx={{
+                fontSize: "16px",
+                color: "#FFFFFF",
+                "&:hover": {
+                  color: "#E8E8E8",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              ADMIN MANAGE SERVICES
+            </Typography>
+            <Typography
+              onClick={() => navigate("/manage/user")}
+              sx={{
+                fontSize: "16px",
+                color: "#FFFFFF",
+                "&:hover": {
+                  color: "#E8E8E8",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              ADMIN MANAGE USER
+            </Typography>
+            <Typography
+              onClick={() => navigate("/manage/checkout")}
+              sx={{
+                fontSize: "16px",
+                color: "#FFFFFF",
+                "&:hover": {
+                  color: "#E8E8E8",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              ADMIN MANAGE CHECKOUT
+            </Typography>
+          </>
         )}
       </Box>
     </Box>

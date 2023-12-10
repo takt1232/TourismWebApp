@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   Box,
   Button,
@@ -23,6 +24,7 @@ const ServiceSchema = yup.object().shape({
   details: yup.string().required("details required"),
   price: yup.number().required("price required"),
   image: yup.string().required("image required"),
+  quantity: yup.number().required("quantity required"),
 });
 
 const EditServiceForm = ({
@@ -33,6 +35,7 @@ const EditServiceForm = ({
   details,
   price,
   image,
+  quantity,
 }) => {
   const initialServiceSchema = {
     id,
@@ -42,6 +45,7 @@ const EditServiceForm = ({
     details: details,
     price: price,
     image: image,
+    quantity: quantity,
   };
 
   const { palette } = useTheme();
@@ -64,7 +68,7 @@ const EditServiceForm = ({
     const postSave = await postResponse.json();
     onSubmitProps.resetForm();
     if (postSave) {
-      navigate("/dashboard");
+      window.location.reload();
     }
   };
 
@@ -202,6 +206,16 @@ const EditServiceForm = ({
                 helperText={touched.price && errors.price}
                 sx={{ gridColumn: "span 4" }}
               />
+              <TextField
+                label="Quantity"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.quantity}
+                name="quantity"
+                error={Boolean(touched.quantity) && Boolean(errors.quantity)}
+                helperText={touched.quantity && errors.quantity}
+                sx={{ gridColumn: "span 4" }}
+              />
               <Box
                 gridColumn="span 4"
                 border={`1px solid ${palette.neutral.medium}`}
@@ -263,7 +277,7 @@ const EditServiceForm = ({
                 "&:hover": { color: palette.primary.main },
               }}
             >
-              ADD SERVICE
+              EDIT SERVICE
             </Button>
           </Box>
         </form>

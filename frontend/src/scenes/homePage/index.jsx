@@ -18,7 +18,6 @@ const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
   const [categories, setCategories] = useState([]);
-  const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();

@@ -12,6 +12,7 @@ import authRoutes from "./routes/auth.js";
 import accountRoutes from "./routes/account.js";
 import servicesRoutes from "./routes/service.js";
 import bookRoutes from "./routes/booking.js";
+import paymentRoutes from "./routes/payment.js";
 import { updateService, uploadService } from "./controllers/service.js";
 import { registerAccount } from "./controllers/auth.js";
 import { uploadImage } from "./controllers/image.js";
@@ -52,7 +53,7 @@ app.use("/auth", authRoutes);
 app.use("/tourists", accountRoutes);
 app.use("/services", servicesRoutes);
 app.use("/book", bookRoutes);
-
+app.use("/payments", paymentRoutes);
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;
 mongoose

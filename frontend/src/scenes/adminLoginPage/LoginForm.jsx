@@ -90,7 +90,7 @@ const LoginForm = () => {
           token: loggedIn.token,
         })
       );
-      navigate("/dashboard");
+      navigate("/manage/services");
     }
   };
 

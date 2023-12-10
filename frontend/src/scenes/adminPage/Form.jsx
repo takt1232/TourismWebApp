@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
 import Dropzone from "react-dropzone";
 
 const ServiceSchema = yup.object().shape({
@@ -23,6 +22,7 @@ const ServiceSchema = yup.object().shape({
   details: yup.string().required("details required"),
   price: yup.number().required("price required"),
   image: yup.string().required("image required"),
+  quantity: yup.number().required("quantity required"),
 });
 
 const initialServiceSchema = {
@@ -32,11 +32,11 @@ const initialServiceSchema = {
   details: "",
   price: 1,
   image: null,
+  quantity: 1,
 };
 
 const AddServiceForm = () => {
   const { palette } = useTheme();
-  const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const uploadService = async (values, onSubmitProps) => {
@@ -52,7 +52,7 @@ const AddServiceForm = () => {
     const postSave = await postResponse.json();
     onSubmitProps.resetForm();
     if (postSave) {
-      navigate("/admin");
+      window.location.reload();
     }
   };
 
@@ -188,6 +188,16 @@ const AddServiceForm = () => {
                 name="price"
                 error={Boolean(touched.price) && Boolean(errors.price)}
                 helperText={touched.price && errors.price}
+                sx={{ gridColumn: "span 4" }}
+              />
+              <TextField
+                label="Quantity"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.quantity}
+                name="quantity"
+                error={Boolean(touched.quantity) && Boolean(errors.quantity)}
+                helperText={touched.quantity && errors.quantity}
                 sx={{ gridColumn: "span 4" }}
               />
               <Box

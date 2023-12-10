@@ -8,15 +8,11 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { DateRangePicker } from "react-date-range";
-import { addDays } from "date-fns";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import FootBar from "scenes/widgets/FootBar";
 import TopBar from "scenes/widgets/TopBar";
-import "react-date-range/dist/styles.css"; // main css file
-import "react-date-range/dist/theme/default.css"; // theme css file
 import BookLoginForm from "./Form";
 import DialogMessage from "components/DialogMessage";
 
@@ -25,6 +21,7 @@ const BookingPage = () => {
 
   const { serviceId } = useParams();
   const [service, setService] = useState(null);
+  const [addError, setAddError] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [bookDone, setBookDone] = useState(false);
@@ -56,19 +53,16 @@ const BookingPage = () => {
 
   const handleBookClose = () => {
     setBookDone(false);
+    window.location.reload();
   };
 
   const handleCancelBook = () => {
     setIsBook(false);
   };
 
-  const [state, setState] = useState([
-    {
-      startDate: new Date(),
-      endDate: addDays(new Date(), 1),
-      key: "selection",
-    },
-  ]);
+  const handleCloseError = () => {
+    setAddError("");
+  };
 
   const getService = async () => {
     const response = await fetch(
@@ -93,11 +87,8 @@ const BookingPage = () => {
       id_account: user._id,
       name: `${user.firstName} ${user.lastName}`,
       email: user.email,
-      count: service.count,
+      count: 1,
       amount: service.price,
-      reservation: state[0].startDate, // Assuming the start date is in the first object of state array
-      reservationcompletion: state[0].endDate, // Assuming the end date is in the first object of state array
-      // Add more booking details as needed
     };
 
     try {
@@ -109,11 +100,16 @@ const BookingPage = () => {
         },
         body: JSON.stringify(bookingData),
       });
+
+      const data = await response.json();
+      if (data.message) {
+        setAddError(data.message);
+      } else if (data) {
+        setBookDone(true);
+      }
     } catch (error) {
       console.error("Error adding booking:", error);
     }
-
-    setBookDone(true);
   };
 
   useEffect(() => {
@@ -173,106 +169,19 @@ const BookingPage = () => {
       <Divider />
       {loading ? (
         <Typography variant="h3">Loading...</Typography>
-      ) : isBook && isAuth && user ? (
-        <>
-          <Box
-            display={"flex"}
-            justifyContent={"center"}
-            padding={"1rem 0rem 2rem 2rem"}
-          >
-            <Typography variant="h4">Reservation Date Selection</Typography>
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="row"
-            alignItems="flex-start"
-            justifyContent={"center"}
-            padding={"0rem 4rem 4rem 4rem"}
-            gap={"5rem"}
-          >
-            {/* Date pickers for reservation dates */}
-            <DateRangePicker
-              onChange={(item) => setState([item.selection])}
-              showSelectionPreview={true}
-              moveRangeOnFirstSelection={false}
-              months={1}
-              ranges={state}
-              minDate={addDays(new Date(), -30)}
-              maxDate={addDays(new Date(), 90)}
-              direction="vertical"
-              scroll={{ enabled: true }}
-            />
-            {/* Input fields for booking information */}
-            <Box
-              boxShadow={"0px 0px 4px 2px rgba(0, 0, 0, 0.1)"}
-              borderRadius={"5px"}
-              sx={{ backgroundColor: "#EDEDED" }}
-            >
-              <Box
-                display={"flex"}
-                flexDirection={"column"}
-                gap={"2rem"}
-                padding={"1rem"}
-              >
-                <Typography variant="h4">Personal Details:</Typography>
-                <Typography>Name</Typography>
-                <TextField
-                  type="text"
-                  name="name"
-                  placeholder="Name"
-                  value={`${user.firstName} ${user.lastName}`}
-                />
-                <Typography>Email</Typography>
-                <TextField
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={user.email}
-                />
-                <Box display={"flex"} flexDirection={"row"} gap={"1rem"}>
-                  <Button
-                    onClick={handleCancelBook}
-                    sx={{
-                      backgroundColor: "#B63332",
-                      color: "#ffffff",
-                      padding: "1rem",
-                      "&:hover": {
-                        backgroundColor: "#B63332",
-                      },
-                    }}
-                  >
-                    CANCEL BOOKING
-                  </Button>
-                  <Button
-                    onClick={addBook}
-                    sx={{
-                      backgroundColor: "#489BAF",
-                      color: "#ffffff",
-                      padding: "1rem",
-                      "&:hover": {
-                        backgroundColor: "#489BAF",
-                      },
-                    }}
-                  >
-                    CONFIRM BOOKING
-                  </Button>
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-        </>
-      ) : isBook ? (
-        <Box display={"flex"} justifyContent={"center"} padding={"4rem"}>
-          <BookLoginForm />
-        </Box>
-      ) : (
+      ) : isAuth && user ? (
         <>
           <Box
             display={"flex"}
             justifyContent={"center"}
             padding={"1rem 0rem 0rem 2rem"}
           >
-            <Typography variant="h4">Book Service</Typography>
+            <Typography
+              variant="h4"
+              sx={{ color: "#7D7D7D", fontWeight: "bold" }}
+            >
+              BUY SERVICE
+            </Typography>
           </Box>
           <Box
             display={"flex"}
@@ -297,12 +206,11 @@ const BookingPage = () => {
               gap={"1rem"}
               width={"50%"}
             >
-              <Typography variant="h1" sx={{ fontSize: "24px" }}>
+              <Typography variant="h4">
                 {service.title.toUpperCase()}
               </Typography>
-              <Typography variant="h1" sx={{ fontSize: "24px" }}>
-                PHP ₱ {service.price}
-              </Typography>
+              <Typography variant="h4">PHP ₱ {service.price}</Typography>
+              <Typography variant="h6">QUANTITY: {service.quantity}</Typography>
 
               <Box
                 display={"flex"}
@@ -342,9 +250,7 @@ const BookingPage = () => {
               {details && <Typography>{service.details}</Typography>}
               <Box display={"flex"} justifyContent={"center"}>
                 <Button
-                  onClick={() => {
-                    handleBook();
-                  }}
+                  onClick={addBook}
                   sx={{
                     backgroundColor: "#489BAF",
                     color: "#ffffff",
@@ -354,19 +260,47 @@ const BookingPage = () => {
                     },
                   }}
                 >
-                  BOOK NOW
+                  BUY NOW
                 </Button>
               </Box>
             </Box>
           </Box>
         </>
+      ) : (
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          padding={"4rem"}
+        >
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            padding={"1rem 0rem 1rem 2rem"}
+          >
+            <Typography
+              variant="h4"
+              sx={{ color: "#7D7D7D", fontWeight: "bold" }}
+            >
+              YOU MUST LOGIN IN ORDER TO BUY
+            </Typography>
+          </Box>
+          <BookLoginForm />
+        </Box>
       )}
       <FootBar />
       <DialogMessage
         open={bookDone}
         handleClose={handleBookClose}
-        title="Book Done"
+        title="Buy Done"
         content="Check Cart To Confirm"
+      />
+      <DialogMessage
+        open={addError}
+        handleClose={handleBookClose}
+        title="Buy Error"
+        content={addError}
       />
     </Box>
   );

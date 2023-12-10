@@ -5,7 +5,7 @@ import Account from "../models/Accounts.js";
 /* REGISTER USER */
 export const registerAccount = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, role } = req.body;
+    const { firstName, lastName, email, password, image, role } = req.body;
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -15,6 +15,7 @@ export const registerAccount = async (req, res) => {
       lastName,
       email,
       password: passwordHash,
+      image,
       role,
     });
     const savedUser = await newAccount.save();

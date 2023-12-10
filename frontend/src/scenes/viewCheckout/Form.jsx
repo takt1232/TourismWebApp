@@ -14,7 +14,6 @@ import { useDispatch } from "react-redux";
 import { setLogin } from "state";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
-import DialogMessage from "components/DialogMessage";
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
@@ -42,7 +41,7 @@ const initialValuesLogin = {
   password: "",
 };
 
-const CartLoginForm = () => {
+const CheckoutLoginForm = () => {
   const [pageType, setPageType] = useState("login");
   const { palette } = useTheme();
   const dispatch = useDispatch();
@@ -50,19 +49,13 @@ const CartLoginForm = () => {
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
 
-  const [loginError, setLoginError] = useState("");
-
-  const handleCloseLoginError = () => {
-    setLoginError("");
-  };
-
   const register = async (values, onSubmitProps) => {
     // this allows us to send form info with image
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
-    formData.append("image", values.picture.name);
+    formData.append("picturePath", values.picture.name);
 
     const savedUserResponse = await fetch(
       "http://localhost:3001/auth/register",
@@ -87,9 +80,6 @@ const CartLoginForm = () => {
     });
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
-    if (loggedIn.msg) {
-      setLoginError(loggedIn.msg);
-    }
     if (loggedIn) {
       dispatch(
         setLogin({
@@ -256,14 +246,8 @@ const CartLoginForm = () => {
           </form>
         )}
       </Formik>
-      <DialogMessage
-        open={loginError}
-        handleClose={handleCloseLoginError}
-        title="Login Error"
-        content={loginError}
-      />
     </Box>
   );
 };
 
-export default CartLoginForm;
+export default CheckoutLoginForm;
